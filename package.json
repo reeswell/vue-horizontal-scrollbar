@@ -1,5 +1,5 @@
 {
-  "name": "vue-horizontal-scrollbar",
+  "name": "@reeswell/vue-horizontal-scrollbar",
   "private": false,
   "type": "module",
   "version": "0.0.7",
