@@ -2,7 +2,10 @@
   "name": "vue-horizontal-scrollbar",
   "private": false,
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "packageManager": "pnpm@10.12.3",
   "description": "A customizable horizontal scrollbar component for Vue 3",
   "keywords": [
