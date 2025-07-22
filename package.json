@@ -3,9 +3,6 @@
   "private": false,
   "type": "module",
   "version": "0.1.0",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "packageManager": "pnpm@10.12.3",
   "description": "A customizable horizontal scrollbar component for Vue 3",
   "keywords": [
