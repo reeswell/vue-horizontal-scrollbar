@@ -391,8 +391,8 @@ The component includes responsive breakpoints:
 
 | Key   | Action           |
 |-------|------------------|
-| `←`   | Scroll left      |
-| `→`   | Scroll right     |
+| `Shift + ←`   | Scroll left      |
+| `Shift + →`   | Scroll right     |
 | `Home`| Scroll to start  |
 | `End` | Scroll to end    |
 

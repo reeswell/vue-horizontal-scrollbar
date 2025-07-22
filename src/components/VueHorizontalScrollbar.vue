@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { throttle } from 'lodash-es'
-import { ref, computed, nextTick, onMounted, onUnmounted, readonly } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted, readonly, defineExpose } from 'vue'
 import type {
   ElementSelector,
   HorizontalScrollbarProps,
@@ -255,20 +255,27 @@ function stopDragging(): void {
   isDragging.value = false
 }
 
-function handleKeyDown(e: KeyboardEvent): void {
-  if (!props.enableKeyboard || !targetElement.value || props.disabled) return
+function handleKeyDown(e: KeyboardEvent) {
+  if (!props.enableKeyboard || !targetElement)
+    return
 
+  const step = 50
   let handled = false
 
+  if (e.shiftKey) {
+    switch (e.key) {
+      case 'ArrowLeft':
+        scrollToPosition(scrollLeft.value - step)
+        handled = true
+        break
+      case 'ArrowRight':
+        scrollToPosition(scrollLeft.value + step)
+        handled = true
+        break
+    }
+  }
+
   switch (e.key) {
-    case 'ArrowLeft':
-      scrollToPosition(scrollLeft.value - props.scrollStep)
-      handled = true
-      break
-    case 'ArrowRight':
-      scrollToPosition(scrollLeft.value + props.scrollStep)
-      handled = true
-      break
     case 'Home':
       scrollToPosition(0)
       handled = true
@@ -281,7 +288,20 @@ function handleKeyDown(e: KeyboardEvent): void {
 
   if (handled) {
     e.preventDefault()
-    emit('keydown', e)
+  }
+}
+
+function handleWheel(e: WheelEvent) {
+  if (!props.enableKeyboard || !targetElement || !e.shiftKey)
+    return
+
+  e.preventDefault()
+
+  const step = Math.abs(e.deltaY) * 0.5
+  if (e.deltaY > 0) {
+    scrollToPosition(scrollLeft.value + step)
+  } else {
+    scrollToPosition(scrollLeft.value - step)
   }
 }
 
@@ -295,6 +315,7 @@ function cleanup(): void {
   }
 
   document.removeEventListener('keydown', handleKeyDown)
+  document.removeEventListener('wheel', handleWheel)
   document.removeEventListener('mousemove', handleMouseMove)
   document.removeEventListener('mouseup', handleMouseUp)
   document.removeEventListener('touchmove', handleTouchMove)
@@ -306,6 +327,7 @@ onMounted(() => {
 
   if (props.enableKeyboard) {
     document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('wheel', handleWheel, { passive: false })
   }
 })
 
