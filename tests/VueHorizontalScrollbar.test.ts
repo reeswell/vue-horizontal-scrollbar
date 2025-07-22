@@ -99,7 +99,7 @@ describe('VueHorizontalScrollbar', () => {
     expect(mockTarget.scrollLeft).toBe(100)
   })
 
-  it('handles keyboard navigation', async () => {
+  it('handles keyboard navigation with shift + arrow keys', async () => {
     wrapper = mount(VueHorizontalScrollbar, {
       props: {
         targetSelector: '.target',
@@ -114,10 +114,53 @@ describe('VueHorizontalScrollbar', () => {
     await nextTick()
     await nextTick()
 
-    const keyEvent = new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    wrapper.vm.handleKeyDown(keyEvent)
-
+    // Test Shift + ArrowRight
+    const rightKeyEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      shiftKey: true
+    })
+    wrapper.vm.handleKeyDown(rightKeyEvent)
     expect(mockTarget.scrollLeft).toBe(50)
+
+    // Test Shift + ArrowLeft
+    const leftKeyEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      shiftKey: true
+    })
+    wrapper.vm.handleKeyDown(leftKeyEvent)
+    expect(mockTarget.scrollLeft).toBe(0)
+  })
+
+  it('does not respond to arrow keys without shift key', async () => {
+    wrapper = mount(VueHorizontalScrollbar, {
+      props: {
+        targetSelector: '.target',
+        contentSelector: '.content',
+        scrollStep: 50
+      },
+      global: {
+        stubs: { Teleport: { template: '<div><slot /></div>' } }
+      }
+    })
+
+    await nextTick()
+    await nextTick()
+
+    // Test ArrowRight without shift
+    const rightKeyEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      shiftKey: false
+    })
+    wrapper.vm.handleKeyDown(rightKeyEvent)
+    expect(mockTarget.scrollLeft).toBe(0)
+
+    // Test ArrowLeft without shift
+    const leftKeyEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      shiftKey: false
+    })
+    wrapper.vm.handleKeyDown(leftKeyEvent)
+    expect(mockTarget.scrollLeft).toBe(0)
   })
 
   it('does not respond when disabled', async () => {
